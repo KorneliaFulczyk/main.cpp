@@ -60,7 +60,7 @@ bool checkPopulation(int s, int i, int r) {
 		return false;
 	}
 }
-int main()
+int main2()
 {
 	int s = 80;
 	int i = 10;

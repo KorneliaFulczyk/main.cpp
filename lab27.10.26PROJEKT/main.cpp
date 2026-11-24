@@ -7,7 +7,7 @@ using namespace std;
 
 //funkcje
 void showPopulation(int day, int susceptible, int infected, int recovered);
-void simulateDay(int* day, int* susceptible, int* infected, int* recovered, double infectionRate, double recoveryRate);
+void simulateDay(int* day, int* susceptible, int* infected, int* recovered, double infectionRate, double recoveryRate, int dailyNewInfections[], int dailyNewRecoveries[]);
 bool checkPopulation(int s, int i, int r);
 
 
@@ -22,7 +22,7 @@ void showPopulation(int day, int susceptible, int infected, int recovered) {
 }
 
 
-void simulateDay(int* day, int* susceptible, int* infected, int* recovered, double infectionRate, double recoveryRate) {
+void simulateDay(int* day, int* susceptible, int* infected, int* recovered, double infectionRate, double recoveryRate, int dailyNewInfections[], int dailyNewRecoveries[]) {
 	//cout << "Infection Rate: " << infectionRate << endl;
 	//cout << "Recovery Rate: " << recoveryRate << endl;
 	int prevInfected = *infected;
@@ -30,7 +30,7 @@ void simulateDay(int* day, int* susceptible, int* infected, int* recovered, doub
 
 	int newInfections = floor(prevInfected * infectionRate);
 	int newRecoveries = floor(prevInfected * recoveryRate);
-
+	
 
 	if (newInfections > *susceptible) { //ograniczenie
 		newInfections = *susceptible;
@@ -49,6 +49,8 @@ void simulateDay(int* day, int* susceptible, int* infected, int* recovered, doub
 
 	(*day)++;
 
+	dailyNewInfections[*day - 1] = newInfections;
+	dailyNewRecoveries[*day - 1] = newRecoveries;
 }
 
 bool checkPopulation(int s, int i, int r) {
@@ -71,6 +73,15 @@ int main()
 	double infectionRate = 0.20;
 	double recoveryRate = 0.10;
 
+	int tab[101] = { 0 }; // zeby nie bylo smieci
+
+	int populationHistory[101][3];
+	populationHistory[day][0] = s;
+	populationHistory[day][1] = i;
+	populationHistory[day][2] = r;
+
+	int dailyNewInfections[100] = { 0 };
+	int dailyNewRecoveries[100] = { 0 };
 
 	int numer = 0;
 
@@ -78,14 +89,14 @@ int main()
 		showPopulation(day, s, i, r);
 		cout << endl;
 		cout << endl;
-		cout << "=== Epidemic Simulator ===\n1.Simulate next day.\n2.Change model parameters.\n3.Exit.\n Your choice: ";
+		cout << "=== Epidemic Simulator ===\n1.Simulate next day.\n2.Change model parameters.\n3.Show population history.\n4.Exit.\n Your choice: ";
 		cin >> numer;
 		cout << endl;
 
 		if (cin.fail()) { // dzieki temu wpisanie czegos innego niz liczba nie powoduje nieskonczonej petli
 			cin.clear();
 			cin.ignore(1000, '\n');
-			cout << "ERROR! Enter 1,2 or 3! \n" << endl;
+			cout << "ERROR! Enter 1, 2, 3 or 4! \n" << endl;
 
 
 			continue;
@@ -95,9 +106,20 @@ int main()
 
 		switch (numer) {
 		case 1:
-			simulateDay(&day, &s, &i, &r, infectionRate, recoveryRate);
-			if (!checkPopulation(s, i, r)) {
-				cout << "ERROR! \n";
+			if (tab[100] == 0) {
+				simulateDay(&day, &s, &i, &r, infectionRate, recoveryRate,dailyNewInfections, dailyNewRecoveries);
+				if (!checkPopulation(s, i, r)) {
+					cout << "ERROR! \n";
+				}
+
+				tab[day] = day;
+				populationHistory[day][0] = s;
+				populationHistory[day][1] = i;
+				populationHistory[day][2] = r;
+			}
+
+			else {
+				cout << "ERROR!\nCannot simulate another day.\nSimulation limit has been reached." << endl << endl;
 			}
 			break;
 
@@ -148,14 +170,33 @@ int main()
 			break;
 
 		}
-		case 3:
+		case 3: {
+			cout << "Showing population history and new daily infections and recoveries: \n" <<endl;
+			
+			for (int d = 0; d <= day; d++) {
+				
+				cout <<"  Statistics for day " << d << ": " << endl << endl;
+				cout <<"    Susceptible: "<< populationHistory[d][0] << endl;
+				cout <<"    Infected: " << populationHistory[d][1] << endl;
+				cout <<"    Recovered: "<< populationHistory[d][2] << endl << endl;
+
+				if (d > 0) {
+					cout <<"    New infections: "<< dailyNewInfections[d - 1] << endl;
+					cout <<"    New recoveries: "<<dailyNewRecoveries[d- 1] << endl << endl << endl;
+				}
+				
+			}
+			cout << "--------------------" << endl;
+			break;
+		}
+		case 4:
 			cout << "Exiting...\n";
 			return 0;
 			break;
 
 
 		default:
-			cout << "ERROR! Enter 1,2 or 3!  \n";
+			cout << "ERROR! Enter 1, 2, 3 or 4!  \n";
 			cout << endl;
 			break;
 

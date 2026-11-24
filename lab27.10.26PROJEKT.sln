@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.37710.0 d17.14
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12224.181 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lab27.10.26PROJEKT", "lab27.10.26PROJEKT\lab27.10.26PROJEKT.vcxproj", "{96AC2E5A-712D-408F-91B1-13DDBE84513D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B23274D0-0701-488F-8071-99F4B0E464C4}"
+	ProjectSection(SolutionItems) = preProject
+		lab27.10.26PROJEKT\main.cpp = lab27.10.26PROJEKT\main.cpp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
